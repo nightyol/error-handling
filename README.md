@@ -27,20 +27,20 @@ solidity
 The 'isempty' function checks if the money variable has a value of 0. It uses an 'assert' statement to verify this condition. If the assertion fails, it will throw an exception. If the money variable is indeed 0, it returns the string message "Yes, I has no money."
 
 # detailed explanation
-extract(uint price)
+## extract(uint price)
 This function is used to extract money from the contract's balance. It ensures that the requested amount is not greater than the available balance (money). If the balance is sufficient, the requested amount is subtracted from the balance. Otherwise, it throws an error with the message "I does not have enough money".
 
-stake(uint price)
+## stake(uint price)
 The stake function is used to add money to the contract's balance. It adds the specified amount to the money variable. However, if the resulting balance exceeds 100, the function reverts the transaction and throws an error with the message "my money cannot have more than 100".
 
-isempty()
+## isempty()
 This function checks if the money variable has a value of 0. It uses the assert statement to verify that the balance is indeed 0. If the assertion fails, indicating that the balance is not 0, it will result in an error.
 
 # Author
-TANAY KUMAR RAI
+TANAY RAI
 
 # Licence
 This contract is licensed under the MIT License.
 
-error_handling/README.md at main · Satya-1107/error_handling
+
  
