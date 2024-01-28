@@ -1,0 +1,24 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.13;
+
+contract ModifiedHandlingtheError {
+    uint public balance = 50;
+
+    // Withdrawal function: Ensure enough balance before withdrawing
+    function withdraw(uint amount) public {
+        require(balance >= amount, "Insufficient funds");
+        balance -= amount;
+    }
+
+    // Deposit function: Prevent depositing more than 100
+    function deposit(uint amount) public {
+        balance += amount;
+        require(balance <=100, "Balance cannot exceed 100");
+    }
+
+    // Check if the balance is empty
+    function isBalanceEmpty() public view returns (string memory) {
+        assert(balance == 0);
+        return "Yes, the balance is empty";
+    }
+}
