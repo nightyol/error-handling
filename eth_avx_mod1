@@ -1,24 +1,54 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.0;
 
-contract ModifiedHandlingtheError {
-    uint public balance = 50;
+contract Crowdfunding {
+    address public campaignCreator;
+    uint256 public fundraisingGoal;
+    uint256 public totalFundsRaised;
 
-    // Withdrawal function: Ensure enough balance before withdrawing
-    function withdraw(uint amount) public {
-        require(balance >= amount, "Insufficient funds");
-        balance -= amount;
+    enum CampaignState { Active, Successful, Expired }
+
+    CampaignState public state;
+
+    constructor(uint256 _goal) {
+        campaignCreator = msg.sender;
+        fundraisingGoal = _goal;
+        state = CampaignState.Active;
     }
 
-    // Deposit function: Prevent depositing more than 100
-    function deposit(uint amount) public {
-        balance += amount;
-        require(balance <=100, "Balance cannot exceed 100");
+    modifier onlyCreator() {
+        require(msg.sender == campaignCreator, "Only the campaign creator can call this function");
+        _;
     }
 
-    // Check if the balance is empty
-    function isBalanceEmpty() public view returns (string memory) {
-        assert(balance == 0);
-        return "Yes, the balance is empty";
+    modifier campaignActive() {
+        require(state == CampaignState.Active, "Campaign must be active");
+        _;
+    }
+
+    function contribute() external payable campaignActive {
+        totalFundsRaised += msg.value;
+    }
+
+    function checkGoalReached() external onlyCreator {
+        require(state == CampaignState.Active, "Campaign must be active");
+        
+        if (totalFundsRaised >= fundraisingGoal) {
+            state = CampaignState.Successful;
+        } else {
+            state = CampaignState.Expired;
+        }
+    }
+
+    function withdrawFunds() external onlyCreator {
+        require(state == CampaignState.Successful, "Campaign must be successful to withdraw funds");
+        
+        // Perform withdrawal
+        bool success = payable(campaignCreator).send(totalFundsRaised);
+        require(success, "Withdrawal failed");
+        
+        // Reset state and funds for potential future campaigns
+        state = CampaignState.Expired;
+        totalFundsRaised = 0;
     }
 }
